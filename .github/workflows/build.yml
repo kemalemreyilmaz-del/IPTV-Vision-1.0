@@ -1,4 +1,4 @@
-name: Build APK
+name: Build Node Project
 
 on:
   push:
@@ -11,20 +11,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          node-version: '20'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew || true
-
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
         with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm run build
